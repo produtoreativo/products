@@ -8,10 +8,10 @@
 #husky run
 
 ### run all tasks with group: 'group-name'
-#husky run --group group-name
+# dotnet husky run --group "commit-linter" --args "$1"
 
 ## run task with name: 'task-name'
-#husky run --name task-name
+# dotnet husky run --name "commit-message-linter" --args "$1"
 
 ## pass hook arguments to task
 #husky run --args "$1" "$2"
