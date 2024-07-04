@@ -1,7 +1,6 @@
 using System.Text.RegularExpressions;
 
 var pattern = @"^(?=.{1,90}$)(?:build|feat|ci|chore|docs|fix|perf|refactor|revert|style|test)(?:\(.+\))*(?::).{4,}(?:#\d+)*(?<![\.\s])$";
-Console.WriteLine(File.ReadAllLines(Args[0]));
 var msg = File.ReadAllLines(Args[0])[0];
 
 if (Regex.IsMatch(msg, pattern))
