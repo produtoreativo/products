@@ -11,6 +11,7 @@ using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
+using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 class Build : NukeBuild
 {
@@ -23,21 +24,21 @@ class Build : NukeBuild
         .Before(Restore)
         .Executes(() =>
         {
-            DotNetTasks.DotNetClean();
+            DotNetClean();
         });
 
     Target Restore => _ => _
         .DependsOn(Clean)
         .Executes(() =>
         {
-            DotNetTasks.DotNetRestore();
+            DotNetRestore();
         });
 
     Target Compile => _ => _
         .DependsOn(Restore)
         .Executes(() =>
         {
-            DotNetTasks.DotNetBuild();
+            DotNetBuild();
         });
 
 }
