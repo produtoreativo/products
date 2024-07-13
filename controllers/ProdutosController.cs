@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using Products.DTOs;
-using Products.Services;
+using Produtos.DTOs;
+using Produtos.Services;
+using Swashbuckle.AspNetCore.Annotations;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Products.controllers;
+namespace Produtos.Controllers;
 
 [ApiController]
 [Route("api/produtos")]
@@ -10,20 +14,32 @@ public class ProdutosController : ControllerBase
 {
     private readonly ProdutoService _produtoService;
 
-    public ProdutosController(ProdutoService produtoService) {
+    public ProdutosController(ProdutoService produtoService)
+    {
         _produtoService = produtoService;
     }
 
     [HttpGet]
-    public ActionResult<List<ProdutoDTO>> GetAllProdutos()
+    [SwaggerOperation(Summary = "Retrieve all products", Description = "Gets a list of all products.")]
+    [SwaggerResponse(200, "Success", typeof(List<ProdutoDto>))]
+    public async Task<ActionResult<List<ProdutoDto>>> GetAllProdutos()
     {
-        var produtosMockados = _produtoService.GetAllProdutos();
-        return Ok(produtosMockados);
+        var produtos = await _produtoService.GetAllProdutosAsync();
+        return Ok(produtos);
     }
+
     [HttpGet("{id}", Name = "GetProduct")]
-    public ActionResult<ProdutoDTO> GetProduto(string id)
+    [SwaggerOperation(Summary = "Retrieve a specific product by ID", Description = "Gets a single product by ID.")]
+    [SwaggerResponse(200, "Success", typeof(ProdutoDto))]
+    [SwaggerResponse(404, "Not Found")]
+    public async Task<ActionResult<ProdutoDto>> GetProduto(string id)
     {
-        var produto = _produtoService.GetProdutoById(id);
+        if (!Guid.TryParse(id, out var guid))
+        {
+            return BadRequest("Invalid ID format");
+        }
+
+        var produto = await _produtoService.GetProdutoByIdAsync(guid);
         if (produto == null)
         {
             return NotFound("Produto não encontrado");
@@ -32,54 +48,70 @@ public class ProdutosController : ControllerBase
         return Ok(produto);
     }
 
-    [HttpDelete("{id}")]
-    public ActionResult DeleteProduto(string id)
-    {
-        if (string.IsNullOrEmpty(id))
-        {
-            return BadRequest("Id do produto inválido");
-        }
-
-        var produto = _produtoService.GetProdutoById(id);
-        if (produto == null)
-            {
-                return NotFound("Produto não encontrado");
-            }
-
-        _produtoService.DeleteProduto(id);
-
-        return NoContent();
-    }
-
-    [HttpPut("{id}")]
-    public ActionResult UpdateProduto(string id, ProdutoDTO product)
-    {
-        if (string.IsNullOrEmpty(id) || product == null)
-        {
-            return BadRequest("Id do produto inválido ou dados do produto faltando");
-        }
-
-          var produtoExistente = _produtoService.GetProdutoById(id);
-        if (produtoExistente == null)
-        {
-            return NotFound("Prodto não encontrado");
-        }
-
-        _produtoService.UpdateProduto(id, product);
-
-        return NoContent();
-    }
-
     [HttpPost]
-    public ActionResult<ProdutoDTO> CreateProduto(ProdutoDTO product)
+    [SwaggerOperation(Summary = "Create a new product", Description = "Creates a new product.")]
+    [SwaggerResponse(201, "Created", typeof(ProdutoDto))]
+    [SwaggerResponse(400, "Bad Request")]
+    public async Task<ActionResult<ProdutoDto>> CreateProduto([FromBody] ProdutoDto product)
     {
         if (product == null)
         {
             return BadRequest("Dados do produto ausentes");
         }
 
-          var novoProduto = _produtoService.CreateProduto(product);
+        var novoProduto = await _produtoService.CreateProdutoAsync(product);
 
-        return CreatedAtRoute("GetProduct", new { id = product.Id }, novoProduto);
+        return CreatedAtRoute("GetProduct", new { id = novoProduto.Id }, novoProduto);
+    }
+
+    [HttpPut("{id}")]
+    [SwaggerOperation(Summary = "Update an existing product", Description = "Updates an existing product.")]
+    [SwaggerResponse(204, "No Content")]
+    [SwaggerResponse(400, "Bad Request")]
+    [SwaggerResponse(404, "Not Found")]
+    public async Task<ActionResult> UpdateProduto(string id, [FromBody] ProdutoDto product)
+    {
+        if (!Guid.TryParse(id, out var guid))
+        {
+            return BadRequest("Invalid ID format");
+        }
+
+        if (product == null)
+        {
+            return BadRequest("Dados do produto ausentes");
+        }
+
+        var produtoExistente = await _produtoService.GetProdutoByIdAsync(guid);
+        if (produtoExistente == null)
+        {
+            return NotFound("Produto não encontrado");
+        }
+
+        await _produtoService.UpdateProdutoAsync(guid, product);
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    [SwaggerOperation(Summary = "Delete a product", Description = "Deletes a product by ID.")]
+    [SwaggerResponse(204, "No Content")]
+    [SwaggerResponse(400, "Bad Request")]
+    [SwaggerResponse(404, "Not Found")]
+    public async Task<ActionResult> DeleteProduto(string id)
+    {
+        if (!Guid.TryParse(id, out var guid))
+        {
+            return BadRequest("Invalid ID format");
+        }
+
+        var produto = await _produtoService.GetProdutoByIdAsync(guid);
+        if (produto == null)
+        {
+            return NotFound("Produto não encontrado");
+        }
+
+        await _produtoService.DeleteProdutoAsync(guid);
+
+        return NoContent();
     }
 }

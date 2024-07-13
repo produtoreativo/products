@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   products-api:
     build: .
@@ -6,6 +8,8 @@ services:
     depends_on:
       - mssqlserver
       - elasticsearch
+    environment:
+      - DB_CONNECTION_URI=Server=mssqlserver;Database=master;User Id=sa;Password=SqlP@ssW0rd;
 
   mssqlserver:
     image: mcr.microsoft.com/mssql/server
@@ -15,11 +19,11 @@ services:
     ports:
       - 1433:1433
     healthcheck:
-        test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P SqlP@ssW0rd -Q 'SELECT 1' || exit 1"]
-        interval: 10s
-        retries: 10
-        start_period: 10s
-        timeout: 3s
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P SqlP@ssW0rd -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      timeout: 3s
 
   elasticsearch:
     image: docker.io/bitnami/elasticsearch:7.17.10
@@ -34,10 +38,10 @@ services:
     ports:
       - 9200:9200
     healthcheck:
-        test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
-        interval: 30s
-        timeout: 30s
-        retries: 5
+      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
 
 volumes:
   elasticsearch_data:
