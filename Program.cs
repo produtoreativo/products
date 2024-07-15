@@ -4,9 +4,18 @@ using Produtos.Repositories;
 using Produtos.Data;
 using Produtos.Services;
 using Produtos.Mappings;
-using Swashbuckle.AspNetCore.Annotations; // Certifique-se de adicionar este namespace
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Carrega variáveis de ambiente do arquivo .env se estiver em desenvolvimento
+if (builder.Environment.IsDevelopment())
+{
+    Env.Load();
+}
+
+// Carrega variáveis de ambiente do sistema operacional
+builder.Configuration.AddEnvironmentVariables();
 
 // Carrega configuração do appsettings.{Environment}.json
 builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
@@ -21,20 +30,18 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "API for managing product registrations",
     });
-    c.EnableAnnotations(); // Habilitar anotações
+    c.EnableAnnotations();
 });
 
 // Configura AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// Obtém a string de conexão a partir da configuração ou da variável de ambiente
-var connectionString = builder.Environment.IsDevelopment()
-    ? builder.Configuration.GetConnectionString("DefaultConnection")
-    : Environment.GetEnvironmentVariable("DB_CONNECTION_URI") ?? builder.Configuration.GetConnectionString("DockerConnection");
+// Pega a string de conexão a partir da variável de ambiente (.env ou OS)
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_URI");
 
 if (string.IsNullOrEmpty(connectionString))
 {
-    throw new InvalidOperationException("A string de conexão não foi configurada. Defina a string de conexão 'DefaultConnection' em 'appsettings.json' ou a variável de ambiente 'DB_CONNECTION_URI'.");
+    throw new InvalidOperationException("A string de conexão não foi configurada. Defina a variável de ambiente 'DB_CONNECTION_URI'.");
 }
 
 // Configura o DbContext

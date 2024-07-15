@@ -7,8 +7,17 @@
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 
+## Configuração de Ambiente
 
-### 1. Executar o Docker Compose
+### Arquivo .env
+
+Renomeie o arquivo `.env-example` para `.env`:
+
+```bash
+mv .env-example .env
+```
+
+### Executar o Docker Compose
 
 Inicie os serviços do Docker (SQL Server e Elasticsearch) usando o `docker-compose`:
 
@@ -16,17 +25,16 @@ Inicie os serviços do Docker (SQL Server e Elasticsearch) usando o `docker-comp
 docker-compose up -d
 ```
 
-### 2. Restaurar as Dependências e Executar Migrações
+### Restaurar as Dependências e Executar Migrações
 
 Restaurar as dependências do projeto e aplicar as migrações para configurar o banco de dados:
 
 ```bash
 dotnet restore
-dotnet ef migrations add InitialCreate
 dotnet ef database update
 ```
 
-### 3. Executar a Aplicação
+### Executar a Aplicação
 
 Execute a aplicação localmente:
 
@@ -34,7 +42,7 @@ Execute a aplicação localmente:
 dotnet run
 ```
 
-### 4. Acessar a Documentação da API
+### Acessar a Documentação da API
 
 Abra o navegador e acesse a URL do Swagger para visualizar e testar os endpoints da API:
 

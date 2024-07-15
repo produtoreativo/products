@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   products-api:
     build: .
@@ -8,8 +6,6 @@ services:
     depends_on:
       - mssqlserver
       - elasticsearch
-    environment:
-      - DB_CONNECTION_URI=Server=mssqlserver;Database=master;User Id=sa;Password=SqlP@ssW0rd;
 
   mssqlserver:
     image: mcr.microsoft.com/mssql/server

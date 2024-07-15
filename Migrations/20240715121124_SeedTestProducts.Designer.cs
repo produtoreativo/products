@@ -12,7 +12,7 @@ using Produtos.Data;
 namespace Produtos.Data.Migrations
 {
     [DbContext(typeof(ProdutoContext))]
-    [Migration("20240713171210_SeedTestProducts")]
+    [Migration("20240715121124_SeedTestProducts")]
     partial class SeedTestProducts
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
