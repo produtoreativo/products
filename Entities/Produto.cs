@@ -1,4 +1,4 @@
-﻿namespace Products.data.models
+﻿namespace Produtos.Entities
 {
     public class Produto
     {
