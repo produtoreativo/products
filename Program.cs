@@ -4,18 +4,8 @@ using Produtos.Repositories;
 using Produtos.Data;
 using Produtos.Services;
 using Produtos.Mappings;
-using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Carrega variáveis de ambiente do arquivo .env se estiver em desenvolvimento
-if (builder.Environment.IsDevelopment())
-{
-    Env.Load();
-}
-
-// Carrega variáveis de ambiente do sistema operacional
-builder.Configuration.AddEnvironmentVariables();
 
 // Carrega configuração do appsettings.{Environment}.json
 builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
@@ -36,8 +26,8 @@ builder.Services.AddSwaggerGen(c =>
 // Configura AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// Pega a string de conexão a partir da variável de ambiente (.env ou OS)
-var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_URI");
+// Pega a string de conexão a partir do appsettings
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 if (string.IsNullOrEmpty(connectionString))
 {
