@@ -9,14 +9,6 @@
 
 ## Configuração de Ambiente
 
-### Arquivo .env
-
-Renomeie o arquivo `.env-example` para `.env`:
-
-```bash
-mv .env-example .env
-```
-
 ### Executar o Docker Compose
 
 Inicie os serviços do Docker (SQL Server e Elasticsearch) usando o `docker-compose`:
