@@ -23,6 +23,7 @@ Restaurar as dependências do projeto e aplicar as migrações para configurar o
 
 ```bash
 dotnet restore
+dotnet build
 dotnet tool install --global dotnet-ef
 dotnet ef database update
 ```
