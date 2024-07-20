@@ -2,6 +2,18 @@
   "version": 1,
   "isRoot": true,
   "tools": {
+    "csharpier": {
+      "version": "0.28.2",
+      "commands": [
+        "dotnet-csharpier"
+      ]
+    },
+    "nuke.globaltool": {
+      "version": "8.0.0",
+      "commands": [
+        "nuke"
+      ]
+    },
     "husky": {
       "version": "0.7.0",
       "commands": [
