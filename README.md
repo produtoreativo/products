@@ -23,6 +23,7 @@ Restaurar as dependências do projeto e aplicar as migrações para configurar o
 
 ```bash
 dotnet restore
+dotnet tool install --global dotnet-ef
 dotnet ef database update
 ```
 
@@ -49,3 +50,6 @@ http://localhost:7001/
 - `POST /api/produtos` - Criar um novo produto
 - `PUT /api/produtos/{id}` - Atualizar um produto existente
 - `DELETE /api/produtos/{id}` - Excluir um produto
+
+### Para criar uma Migration
+[TODO]
