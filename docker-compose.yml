@@ -3,6 +3,10 @@ services:
     build: .
     ports:
       - 3005:3005
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: "http://+:3005"
+      ConnectionStrings__DefaultConnection : "Server=mssqlserver,1433;Database=LocalDatabase;User Id=sa;Password=SqlP@ssW0rd;TrustServerCertificate=True;Encrypt=True;Integrated Security=False;"
     depends_on:
       - mssqlserver
       - elasticsearch

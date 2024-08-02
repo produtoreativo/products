@@ -12,6 +12,5 @@ WORKDIR /app
 COPY --from=build /app .
 
 EXPOSE 3005
-ENV ASPNETCORE_URLS=http://*:3005
 
-ENTRYPOINT ["./products"]
+ENTRYPOINT ["dotnet", "products.dll"]
